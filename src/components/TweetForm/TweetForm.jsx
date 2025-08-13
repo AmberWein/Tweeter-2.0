@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-const TweetForm = ({ addTweet, maxLength = 140 }) => {
+const TweetForm = ({ addTweet, maxLength = 140, loading }) => {
   const [content, setContent] = useState('');
 
   const handleSubmit = (e) => {
@@ -17,7 +17,7 @@ const TweetForm = ({ addTweet, maxLength = 140 }) => {
         onChange={(e) => setContent(e.target.value)}
         placeholder="Please share your thought here..."
       />
-      <button type="submit" disabled={content.length > maxLength}>
+      <button type="submit" disabled={content.length > maxLength || loading}>
         Tweet
       </button>
       <p>{content.length}/{maxLength}</p>
