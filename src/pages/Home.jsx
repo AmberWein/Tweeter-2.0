@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
-import TweetForm from "../TweetForm/TweetForm";
-import TweetList from "../TweetList/TweetList";
-import { supabase } from "../../supabaseClient";
+import TweetForm from "../components/TweetForm/TweetForm";
+import TweetList from "../components/TweetList/TweetList";
+import { supabase } from "../supabaseClient";
 
 const Home = () => {
   const [tweets, setTweets] = useState([]);
@@ -38,18 +38,16 @@ const Home = () => {
 
   // add new tweet to Supabase
   const addTweet = async (content) => {
+    const username = localStorage.getItem("username") || "";
     const newTweet = {
       content,
-      userName: "Moshe",
+      userName: username,
       date: new Date().toISOString(),
     };
-
     setLoading(true);
 
     try {
-      const { data, error } = await supabase
-        .from("Tweets")
-        .insert([newTweet]);
+      const { data, error } = await supabase.from("Tweets").insert([newTweet]);
 
       if (error) throw error;
 
