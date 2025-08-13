@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import TweetForm from "../components/TweetForm/TweetForm";
 import TweetList from "../components/TweetList/TweetList";
 import { supabase } from "../supabaseClient";
@@ -7,6 +8,7 @@ const Home = () => {
   const [tweets, setTweets] = useState([]);
   const [loading, setLoading] = useState(false);
   const [fetching, setFetching] = useState(false);
+  const navigate = useNavigate();
 
   const fetchTweets = async () => {
     setFetching(true);
@@ -18,11 +20,8 @@ const Home = () => {
 
       if (error) throw error;
 
-      if (Array.isArray(data)) {
-        setTweets(data);
-      } else {
-        console.error("unexpected response data:", data);
-      }
+      if (Array.isArray(data)) setTweets(data);
+      else console.error("unexpected response data:", data);
     } catch (error) {
       console.error("error fetching tweets:", error);
       alert("failed to load tweets");
@@ -32,7 +31,15 @@ const Home = () => {
   };
 
   useEffect(() => {
-    fetchTweets();
+    const init = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        navigate("/login");
+        return;
+      }
+      await fetchTweets();
+    };
+    init();
   }, []);
 
   const addTweet = async (content) => {
@@ -52,10 +59,8 @@ const Home = () => {
 
     try {
       const { data, error } = await supabase.from("Tweets").insert([newTweet]);
-
       if (error) throw error;
-
-      setTweets((prevTweets) => [newTweet, ...prevTweets]);
+      setTweets((prev) => [newTweet, ...prev]);
     } catch (error) {
       console.error("error posting tweet:", error);
       alert("failed to post tweet");

@@ -1,18 +1,29 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { supabase } from "../supabaseClient";
 
 const Profile = () => {
+  const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [newUsername, setNewUsername] = useState("");
 
-  // load username from localStorage on mount
   useEffect(() => {
-    const savedUsername = localStorage.getItem("username") || "";
-    setUsername(savedUsername);
-    setNewUsername(savedUsername);
+    const checkUser = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        navigate("/login");
+        return;
+      }
+      // load username from localStorage if session exists
+      const savedUsername = localStorage.getItem("username") || "";
+      setUsername(savedUsername);
+      setNewUsername(savedUsername);
+    };
+    checkUser();
   }, []);
 
   const handleSave = () => {
-    setUsername(newUsername); 
+    setUsername(newUsername);
     localStorage.setItem("username", newUsername);
     alert("User's name updated successfully!");
   };
