@@ -41,7 +41,7 @@ const Home = () => {
     const username = localStorage.getItem("username") || "";
     const newTweet = {
       content,
-      userName: username,
+      userName: localStorage.getItem("username") || "",
       date: new Date().toISOString(),
     };
     setLoading(true);
