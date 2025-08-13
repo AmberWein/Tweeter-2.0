@@ -5,7 +5,16 @@ const TweetForm = ({ addTweet, maxLength = 140, loading }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    const username = localStorage.getItem("username") || "";
+
+    if (!username) {
+      alert("please set your username in Profile before tweeting!");
+      return;
+    }
+
     if (content.length === 0 || content.length > maxLength) return;
+
     addTweet(content);
     setContent('');
   };

@@ -8,7 +8,6 @@ const Home = () => {
   const [loading, setLoading] = useState(false);
   const [fetching, setFetching] = useState(false);
 
-  // fetch tweets from Supabase
   const fetchTweets = async () => {
     setFetching(true);
     try {
@@ -26,7 +25,7 @@ const Home = () => {
       }
     } catch (error) {
       console.error("error fetching tweets:", error);
-      alert("failed to load tweets!");
+      alert("failed to load tweets");
     } finally {
       setFetching(false);
     }
@@ -36,14 +35,19 @@ const Home = () => {
     fetchTweets();
   }, []);
 
-  // add new tweet to Supabase
   const addTweet = async (content) => {
-    const username = localStorage.getItem("username") || "";
+    const username = localStorage.getItem("username");
+    if (!username) {
+      alert("please set a username in your profile before tweeting!");
+      return;
+    }
+
     const newTweet = {
       content,
-      userName: localStorage.getItem("username") || "",
+      userName: username,
       date: new Date().toISOString(),
     };
+
     setLoading(true);
 
     try {
@@ -54,7 +58,7 @@ const Home = () => {
       setTweets((prevTweets) => [newTweet, ...prevTweets]);
     } catch (error) {
       console.error("error posting tweet:", error);
-      alert("failed to post tweet!");
+      alert("failed to post tweet");
     } finally {
       setLoading(false);
     }
@@ -64,7 +68,7 @@ const Home = () => {
     <div>
       <h1>Tweeter 2.0</h1>
       {fetching ? (
-        <p>loading tweets...</p>
+        <p>Loading tweets...</p>
       ) : (
         <>
           <TweetForm addTweet={addTweet} loading={loading} />
