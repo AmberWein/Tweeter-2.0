@@ -64,3 +64,9 @@ A small Twitter-like app built with React, featuring tweet creation, tweet listi
    ```bash
    git clone <repo-url>
    cd tweeter-2.0
+2. **Install dependencies:**
+npm install
+3. **Run the project:**
+   ```bash
+   npm start
+4. **Open http://localhost:3000 in your browser.**
